@@ -43,23 +43,32 @@ if __name__ == '__main__':
     utils.seeding.create_seed(26)
     np.random.seed(26)
 
-
-    ##Reg 4x4
     env = gym.make('FrozenLake-v0')
-    env = env.unwrapped
     env.seed(613)
+
+    # random.seed(26)
+    # utils.seeding.np_random(26)
+    # utils.seeding.hash_seed(26)
+    # utils.seeding.create_seed(26)
+    # np.random.seed(26)
+    #
+    #
+    # ##Reg 4x4
+    # env = gym.make('FrozenLake-v0')
+    # env = env.unwrapped
+    # env.seed(613)
 
     row, col = env.s // env.ncol, env.s % env.ncol
     desc = env.desc.tolist()
     desc = [[c.decode('utf-8') for c in line] for line in desc]
     pg2.main(desc)
 
-
-    random.seed(26)
-    utils.seeding.np_random(26)
-    utils.seeding.hash_seed(26)
-    utils.seeding.create_seed(26)
-    np.random.seed(26)
+    #
+    # random.seed(26)
+    # utils.seeding.np_random(26)
+    # utils.seeding.hash_seed(26)
+    # utils.seeding.create_seed(26)
+    # np.random.seed(26)
 
     ps = []
     p, r = Q.main(env, 4, "4x4")
@@ -88,6 +97,7 @@ if __name__ == '__main__':
 
     s = ["QL","Policy", "Value"]
     for x in range(len(s)):
+        env.seed(26)
         tot_rew = 0
         state = env.reset()
         for _ in range(100):
@@ -154,6 +164,7 @@ if __name__ == '__main__':
     for x in range(len(sizes)):
         print("\n\n\n")
         if x != 0:
+            #From https: // reinforcement - learning4.fun / 2019 / 06 / 24 / create - frozen - lake - random - maps /
             random_map = generate_random_map(size=sizes[x], p=probs[x])
             env = gym.make("FrozenLake-v0", desc=random_map)
             env.seed(613)

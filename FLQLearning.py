@@ -75,6 +75,8 @@ def Q_learning(env, lr=0.01, num_episodes=10000, eps=0.3, gamma=0.99, eps_decay=
     meanv = []
     deltas = []
 
+    vs = 0
+
     for ep in range(num_episodes):
         state = env.reset()
         done = False
@@ -113,9 +115,13 @@ def Q_learning(env, lr=0.01, num_episodes=10000, eps=0.3, gamma=0.99, eps_decay=
         times.append((end-start))
         maxv.append(np.max(Q))
         meanv.append(np.mean(Q))
-        deltas.append(np.sum(np.abs(oldQ - Q)))
-        if(end-start) > 1:
+        # deltas.append(np.sum(np.abs(oldQ - Q)))
+        new = np.sum(Q)
+        deltas.append(abs(new - vs))
+        if( abs(new - vs) < .00001 and ep > 2999 and num_episodes>3000):
+            print(ep)
             break
+        vs = new
 
 
     times = np.cumsum(times)
@@ -143,7 +149,7 @@ def main(env, n, name):
     utils.seeding.create_seed(26)
 
     # Q_qlearning, rewards, times = Q_learning(env, lr=.1, num_episodes=5000, eps=.5, gamma=0.99, eps_decay=0.000001)
-    Q_qlearning, rewards, times, maxv, deltas, meanv = Q_learning(env, lr=.1, num_episodes=3000, eps=.5, gamma=0.99, eps_decay=0.0001)
+    Q_qlearning, rewards, times, maxv, deltas, meanv = Q_learning(env, lr=.1, num_episodes=20000, eps=.5, gamma=0.99, eps_decay=0.0001)
     policy = extract_policy(Q_qlearning, env)#.reshape((n, n))
     print(policy)
 
@@ -153,7 +159,7 @@ def main(env, n, name):
     plt.ylabel("Games won (out of 100)")
     plt.tight_layout()
     plt.legend()
-    plt.savefig(name+' FL Q Reward.png')
+    plt.savefig(name+' FL Q Reward converged.png')
     plt.close()
     plt.figure()
 
@@ -163,7 +169,7 @@ def main(env, n, name):
     plt.ylabel("Time")
     plt.tight_layout()
     plt.legend()
-    plt.savefig(name+' FL Q Time.png')
+    plt.savefig(name+' FL Q Time converged.png')
     plt.close()
     plt.figure()
 
@@ -173,7 +179,7 @@ def main(env, n, name):
     plt.ylabel("Max Utility")
     plt.tight_layout()
     plt.legend()
-    plt.savefig(name + ' FL Q Max Utility.png')
+    plt.savefig(name + ' FL Q Max Utility converged.png')
     plt.close()
     plt.figure()
 
@@ -183,7 +189,7 @@ def main(env, n, name):
     plt.ylabel("Delta")
     plt.tight_layout()
     plt.legend()
-    plt.savefig(name + ' FL Q Delta.png')
+    plt.savefig(name + ' FL Q Delta converged.png')
     plt.close()
     plt.figure()
 
@@ -193,7 +199,7 @@ def main(env, n, name):
     plt.ylabel("Mean Utility")
     plt.tight_layout()
     plt.legend()
-    plt.savefig(name + ' FL Q Mean Utility.png')
+    plt.savefig(name + ' FL Q Mean Utility converged.png')
     plt.close()
     plt.figure()
 
@@ -217,6 +223,63 @@ if __name__ == '__main__':
     env = gym.make('FrozenLake-v0')
     env.seed(613)
 
+    # Q_qlearning, rewards, times, maxv, deltas, meanv = Q_learning(env, lr=.1, num_episodes=20000, eps=.5, gamma=0.99,
+    #                                                               eps_decay=0.0001)
+    # print("rewards " + str(rewards[-1]))
+    # print("mean v " + str(meanv[-1]))
+    # print("max v " + str(maxv[-1]))
+    # print("time " + str(times[-1]))
+    # print(extract_policy(Q_qlearning, env).reshape((4, 4)))
+    #
+    # plt.plot(range(1, len(rewards) + 1), rewards, label="Q")
+    # plt.title("Frozen Lake Q iter vs Games Won")
+    # plt.xlabel("Iterations")
+    # plt.ylabel("Games won (out of 100)")
+    # plt.tight_layout()
+    # plt.legend()
+    # plt.savefig('CONVERGED FL Q Reward.png')
+    # plt.close()
+    # plt.figure()
+    #
+    # plt.plot(range(1, len(times) + 1), times, label="Q")
+    # plt.title("Frozen Lake Q iter vs Time")
+    # plt.xlabel("Iterations")
+    # plt.ylabel("Time")
+    # plt.tight_layout()
+    # plt.legend()
+    # plt.savefig('CONVERGED FL Q Time.png')
+    # plt.close()
+    # plt.figure()
+    #
+    # plt.plot(range(1, len(maxv) + 1), maxv, label="Q")
+    # plt.title("Frozen Lake Q iter vs Max Q Value")
+    # plt.xlabel("Iterations")
+    # plt.ylabel("Max Utility")
+    # plt.tight_layout()
+    # plt.legend()
+    # plt.savefig('CONVERGED FL Q Max Utility.png')
+    # plt.close()
+    # plt.figure()
+    #
+    # plt.plot(range(1, len(deltas) + 1), deltas, label="Q")
+    # plt.title("Frozen Lake Q iter vs Delta")
+    # plt.xlabel("Iterations")
+    # plt.ylabel("Delta")
+    # plt.tight_layout()
+    # plt.legend()
+    # plt.savefig('CONVERGED FL Q Delta.png')
+    # plt.close()
+    # plt.figure()
+    #
+    # plt.plot(range(1, len(meanv) + 1), meanv, label="Q")
+    # plt.title("Frozen Lake Q iter vs Mean Q Value")
+    # plt.xlabel("Iterations")
+    # plt.ylabel("Mean Utility")
+    # plt.tight_layout()
+    # plt.legend()
+    # plt.savefig('CONVERGED FL Q Mean Utility.png')
+    # plt.close()
+    # plt.figure()
 
     epsilons = [.05,.1,.5,1,1.5]
     colors = ['r','g','c','m','y']
